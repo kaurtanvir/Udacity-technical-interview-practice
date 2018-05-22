@@ -15,25 +15,25 @@ def question1(s, t):
     s_len = len(s)
     t_sort = sorted(t)
     for i in range(s_len - t_len + 1):
-        if anagram(s[i: i+t_len], t_sort):
+        if anagram(s[i: i + t_len], t_sort):
             return True
     return False
 
 
 # Case 1: ("udacity", "ad") 
-print question1("udacity","ad")
+#print question1("udacity","ad")
 # True
 
 # Case 2: ("udacity", "")
-print question1("udacity","")
+#print question1("udacity","")
 # True
 
 # Case 3: ("ad", "udacity" ) 
-print question1("ad","udacity")
+#print question1("ad","udacity")
 # False
 
 # Case 4 : ("1987652034","10")
-print question1("1987651034","10")
+#print question1("1987651034","10")
 # True
 
 """
@@ -66,16 +66,136 @@ def question2(a):
     return a[beginIndex:beginIndex+max_length]
 
 # Case 1:  
-print question2("bananas")
+#print question2("bananas")
 # anana
 
 # Case 2:
-print question2("")
+#print question2("")
 #
 
 # Case 3: 
-print question2("babad")
+#print question2("babad")
 # aba
+
+"""
+Given an undirected graph G, find the minimum spanning tree within G. A minimum spanning tree connects all vertices in a graph with the smallest possible total weight of edges. Your function should take in and return an adjacency list structured like this:
+
+{'A': [('B', 2)],
+ 'B': [('A', 2), ('C', 5)], 
+ 'C': [('B', 5)]}
+Vertices are represented as unique strings. The function definition should be question3(G)
+
+"""
+# A utility function to find set of an element i
+
+
+def find(parent, i):
+    if parent[i] == i:
+        return i
+    return find(parent, parent[i])
+ 
+    # A function that does union of two sets of x and y
+def union(parent, rank, x, y):
+    xroot = find(parent, x)
+    yroot = find(parent, y)
+ 
+    if rank[xroot] < rank[yroot]:
+        parent[xroot] = yroot
+    elif rank[xroot] > rank[yroot]:
+        parent[yroot] = xroot
+ 
+        # If ranks are same, then make one as root 
+        # and increment its rank by one
+    else :
+        parent[yroot] = xroot
+        rank[xroot] += 1
+
+def Kruskal(graph, V, key_dict):
+    result = [] # to store the resultant spanning tree
+
+    # edge case when the graph is empty 
+    if len(graph) < 2:
+        return "Graph does not have enough vertices to form edges"
+
+    # sort the graph in order of the weights
+    graph =  sorted(graph,key=lambda item: item[2])
+   
+    parent = []
+    rank = []
+
+    # Create V subsets of vertices and assign rank 0 to all the vertices
+    for node in range(V):
+        parent.append(node)
+        rank.append(0)
+
+    edges = 0
+    i = 0
+
+    while edges < V-1:
+        u,v,w =  graph[i]
+        i = i + 1
+        x = find(parent, u)
+        y = find(parent ,v)
+        # If including this edge does't cause cycle, include it in result and increment the index of result for next edge
+        if x != y:
+            edges = edges + 1    
+            result.append([u,v,w])
+            union(parent, rank, x, y)            
+            # Else discard the edge
+
+    output = []
+    final_result = {}
+    for u,v,weight  in result:
+        output = [(key_dict[v],weight)]
+        if key_dict[u] not in final_result:
+            final_result[key_dict[u]] = output
+        else:
+            final_result[key_dict[u]].append(output)
+            
+    return final_result
+
+def question3(g):
+    dict1 = {}
+    count = 0
+    graph = []
+    key_dict = {}
+    u,v,w = None,None,None
+
+    for i in g:
+        dict1[i] = count
+        key_dict[count] = i
+        count += 1
+    for i in g:
+        for j in g[i]:
+            u = dict1[i]
+            v = dict1[j[0]]
+            w = j[1]
+            graph.append([u,v,w])
+
+    return Kruskal(graph,count,key_dict)
+
+# Case 1:
+g = {'A': [('B', 10),('C', 5),('D', 6)],'B': [('A', 10), ('C', 15)],'C': [('A', 5), ('B', 15),('D', 4)],'D': [('A', 6),('C', 4)]}
+print (question3(g))
+# {'C': [('D', 4)], 'A': [('C', 5), [('B', 10)]]}
+
+# Case 2: 
+g = {}
+print (question3(g))
+# Graph does not have enough vertices to form edges
+
+# Case 3:
+g = {'A': [('B', 2)],
+ 'B': [('A', 2), ('C', 5)], 
+ 'C': [('B', 5)]}
+print (question3(g))
+# {'A': [('B', 2)], 'B': [('C', 5)]}
+
+
+
+
+
+
 
 
 
