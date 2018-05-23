@@ -176,21 +176,87 @@ def question3(g):
 
 # Case 1:
 g = {'A': [('B', 10),('C', 5),('D', 6)],'B': [('A', 10), ('C', 15)],'C': [('A', 5), ('B', 15),('D', 4)],'D': [('A', 6),('C', 4)]}
-print (question3(g))
+#print (question3(g))
 # {'C': [('D', 4)], 'A': [('C', 5), [('B', 10)]]}
 
 # Case 2: 
 g = {}
-print (question3(g))
+#print (question3(g))
 # Graph does not have enough vertices to form edges
 
 # Case 3:
 g = {'A': [('B', 2)],
  'B': [('A', 2), ('C', 5)], 
  'C': [('B', 5)]}
-print (question3(g))
+#print (question3(g))
 # {'A': [('B', 2)], 'B': [('C', 5)]}
 
+
+"""
+Question 4
+"""
+def findParent(T, n):
+    # return parent of n if it exists
+    rows = len(T)
+    if rows < 0:
+        "Tree is empty"
+    for i in range(rows):
+        # check for the row for which nth column is equal to 1
+        if T[i][n] == 1:
+            return i
+    return -1
+
+def question4(T, r, n1, n2):
+
+    rows = len(T)
+    # to check if tree is empty
+    if rows == 0:
+        return "Tree is empty"
+
+    # to check if n1 and n2 are in the tree
+    if n1 < 0 :
+        return "n1 is not in tree"
+
+    if n2 < 0 :
+        return "n2 is not in tree"
+
+    # a list to store parents of n1  
+    n1_parents = []
+    while n1 != r:
+        n1 = findParent(T, n1)
+        # insert n1 and all its ancestors
+        n1_parents.append(n1)
+    if len(n1_parents) == 0:
+        return -1
+    while n2 != r:
+        n2 = findParent(T, n2)
+        # check if n2 or any of its ancestors exist in the list, if yes return the first existing ancestor. 
+        if n2 in n1_parents:
+            return n2
+    return -1
+    
+# Case 1:
+print (question4([],3,1,4))
+# Tree is empty
+
+# Case 2:
+print (question4([[0, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [1, 0, 0, 0, 1],
+           [0, 0, 0, 0, 0]],3,-1,4))
+# n1 is not in tree
+
+# Case 3:   
+print (question4([[0, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [1, 0, 0, 0, 1],
+           [0, 0, 0, 0, 0]],
+          3,
+          1,
+          4))
+# 3
 
 
 """
@@ -245,15 +311,15 @@ n2.next = n3
 n1.next = n2
 
 # Case 1:
-print(question5(n1,8))
+#print(question5(n1,8))
 # m is greater than the length of the linked list
 
 # Case 2:
-print(question5(123,4))
+#print(question5(123,4))
 # ll is not a linked list
 
 # Case 3:
-print(question5(n1,3))
+#print(question5(n1,3))
 # 3
 
 
